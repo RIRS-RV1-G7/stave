@@ -12,6 +12,10 @@ import BetHistory from "./components/BetHistory";
 import AddFunds from "./components/AddFunds";
 import FavoritesList from "./components/FavoritesList";
 import "./styles.css";
+import TeamStats from './components/TeamStats';
+import Notifications from './components/Notifications';
+import UserStats from './components/UserStats';
+
 
 function AppContent() {
   const navigate = useNavigate();
@@ -54,6 +58,10 @@ function AppContent() {
           <Link to="/add-funds" className="hover:text-green-400 font-semibold">
             ADD FUNDS
           </Link>
+          <Link to="/team-stats" className="hover:text-indigo-400 font-semibold">STATS</Link>
+          <Link to="/notifications" className="hover:text-orange-400 font-semibold">NOTIF</Link>
+          <Link to="/user-stats" className="hover:text-teal-400 font-semibold">MY STATS</Link>
+
         </div>
         <div className="flex items-center gap-2">
           <span className="material-icons">account_circle</span>
@@ -69,6 +77,9 @@ function AppContent() {
         <Route path="/bets" element={<BetHistory />} />
         <Route path="/add-funds" element={<AddFunds />} />
         <Route path="/favorites" element={<FavoritesList />} />
+        <Route path="/team-stats" element={<TeamStats teamName="Maribor" />} />
+        <Route path="/notifications" element={<Notifications favorites={["Maribor", "Real Madrid"]} />} />
+        <Route path="/user-stats" element={<UserStats />} />
       </Routes>
     </div>
   );

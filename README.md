@@ -68,3 +68,10 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+# Hercules.ai Application Deployment
+
+S pomočjo platforme **Hercules.ai** je bila ustvarjena nova aplikacija, ki je zdaj dosegljiva na naslovu:  
+👉 [https://stavnica-g7.onhercules.app/](https://stavnica-g7.onhercules.app/)
+
+Ta aplikacija je bila zasnovana in zgrajena z uporabo [Create React App](https://github.com/facebook/create-react-app), v 2 promptih, kar je omogočilo hitro postavitev, enostavno prilagoditev in učinkovito razvojno okolje.

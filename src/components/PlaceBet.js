@@ -7,6 +7,13 @@ const PlaceBet = ({ game, onClose }) => {
   const [betType, setBetType] = useState("Zmaga domačih");
   const [loading, setLoading] = useState(false);
 
+  // Dodamo kvote (lahko se kasneje naloži iz DB)
+  const odds = {
+    "Zmaga domačih": game.odds?.homeWin || 1.5,
+    Remi: game.odds?.draw || 2.0,
+    "Zmaga gostov": game.odds?.awayWin || 2.5,
+  };
+
   const handleBet = async () => {
     const parsedAmount = Number(amount);
     if (!parsedAmount || isNaN(parsedAmount) || parsedAmount <= 0) {
@@ -32,18 +39,18 @@ const PlaceBet = ({ game, onClose }) => {
         const balance = snap.data().balance || 0;
         if (balance < parsedAmount) throw new Error("Ni dovolj sredstev za stavo. Prosimo napolnite račun!");
 
-        // odštej znesek od salda
         tx.update(userRef, { balance: balance - parsedAmount });
 
-        // zabeleži stavo
         const betsRef = collection(db, "bets");
         await addDoc(betsRef, {
           userId: user.uid,
           gameId: game.id,
-          teams: game.teams, // objekt {home, away}
+          teams: game.teams,
           sport: game.sport,
           betType,
           amount: parsedAmount,
+          odds: odds[betType],
+          possibleWin: parsedAmount * odds[betType],
           status: "Oddano",
           createdAt: serverTimestamp(),
         });
@@ -60,7 +67,6 @@ const PlaceBet = ({ game, onClose }) => {
     setLoading(false);
   };
 
-  // Helper funkcija za prikaz ekip
   const renderTeams = (teams) => {
     if (!teams) return "-";
     return `${teams.home} vs ${teams.away}`;
@@ -78,21 +84,43 @@ const PlaceBet = ({ game, onClose }) => {
         <select
           value={betType}
           onChange={(e) => setBetType(e.target.value)}
-          className="w-full border rounded px-3 py-2 mb-4"
+          className="w-full border rounded px-3 py-2 mb-2"
         >
           <option>Zmaga domačih</option>
           <option>Remi</option>
           <option>Zmaga gostov</option>
         </select>
 
+        {/* Prikaz kvote za izbrano vrsto stave */}
+        <p className="mb-4 text-gray-700">
+          Kvota: <span className="font-semibold">{odds[betType]}</span>
+        </p>
+
         <label className="block mb-2 font-semibold">Znesek (€):</label>
         <input
           type="number"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
-          className="w-full border rounded px-3 py-2 mb-4"
+          className="w-full border rounded px-3 py-2 mb-2"
           placeholder="Vnesi znesek"
         />
+
+        {/* Prikaz možnega dobitka */}
+        {amount && !isNaN(Number(amount)) && Number(amount) > 0 && (
+          <p className="mb-4 text-green-700 font-semibold">
+            Možni dobitek: €{(Number(amount) * odds[betType]).toFixed(2)}
+          </p>
+        )}
+
+        {/* Primerjava kvot */}
+        <div className="mb-4 text-sm text-gray-600">
+          <p className="font-semibold">Primerjava kvot:</p>
+          <ul>
+            <li>Zmaga domačih: {odds["Zmaga domačih"]}</li>
+            <li>Remi: {odds["Remi"]}</li>
+            <li>Zmaga gostov: {odds["Zmaga gostov"]}</li>
+          </ul>
+        </div>
 
         <div className="flex justify-end gap-2">
           <button
